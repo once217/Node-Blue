@@ -13,12 +13,10 @@ public abstract class InNode extends Node {
     /** 입력 파이프들의 리스트 */
     private final List<Pipe> inputPipes = new ArrayList<>();
 
-
     public InNode() {
         super();
     }
     
-
     public InNode(UUID id) {
         super(id);
     }
