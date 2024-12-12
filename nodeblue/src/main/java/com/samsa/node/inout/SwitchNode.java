@@ -91,4 +91,5 @@ public class SwitchNode extends InOutNode {
  * // 노드 중지 상태 테스트
  * switchNode.stop();
  * switchNode.onMessage(message); // 메시지가 처리되지 않음
+ * commit test
  */
