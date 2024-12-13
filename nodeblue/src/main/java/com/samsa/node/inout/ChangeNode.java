@@ -72,36 +72,36 @@ public class ChangeNode extends InOutNode {
     @Override
     public void onMessage(Message message) {
         try {
-            // 리플렉션을 사용하여 노드의 상태 필드에 접근
+            /** 리플렉션을 사용하여 노드의 상태 필드에 접근 */
             java.lang.reflect.Field statusField = Node.class.getDeclaredField("status");
             statusField.setAccessible(true);
             Object currentStatus = statusField.get(this);
 
-            // 노드가 실행 중이 아니면 메시지 처리하지 않음
+            /** 노드가 실행 중이 아니면 메시지 처리하지 않음 */
             if (!"RUNNING".equals(currentStatus.toString())) {
                 log.debug("ChangeNode[{}] skipped message: not in RUNNING state", getId());
                 return;
             }
 
             if (isMetadata) {
-                // 메타데이터 변경 로직
+                /** 메타데이터 변경 로직 */
                 log.debug("ChangeNode[{}] modifying metadata - property: {}, value: {}",
                         getId(), propertyName, newValue);
-                // 기존 메타데이터를 복사하여 새로운 Map 생성
+                /** 기존 메타데이터를 복사하여 새로운 Map 생성 */
                 Map<String, Object> newMetadata = new HashMap<>(message.getMetadata());
-                // 지정된 속성에 새로운 값 설정
+                /** 지정된 속성에 새로운 값 설정 */
                 newMetadata.put(propertyName, newValue);
-                // 새로운 메타데이터를 가진 메시지 생성 및 전송
+                /** 새로운 메타데이터를 가진 메시지 생성 및 전송 */
                 emit(new Message(message.getPayload(), newMetadata));
                 log.info("ChangeNode[{}] metadata modified successfully", getId());
             } else {
-                // 페이로드 변경 로직
+                /** 페이로드 변경 로직 */
                 log.debug("ChangeNode[{}] modifying payload - property: {}, value: {}",
                         getId(), propertyName, newValue);
                 Map<String, Object> payloadMap = new HashMap<>();
                 Object payload = message.getPayload();
 
-                // 기존 페이로드가 Map인 경우 데이터 복사
+                /** 기존 페이로드가 Map인 경우 데이터 복사 */
                 if (payload instanceof Map<?, ?> map) {
                     map.forEach((key, value) -> {
                         if (key instanceof String) {
@@ -110,14 +110,14 @@ public class ChangeNode extends InOutNode {
                     });
                 }
 
-                // 새로운 값 설정
+                /** 새로운 값 설정 */
                 payloadMap.put(propertyName, newValue);
-                // 새로운 페이로드를 가진 메시지 생성 및 전송
+                /** 새로운 페이로드를 가진 메시지 생성 및 전송 */
                 emit(new Message(payloadMap, message.getMetadata()));
                 log.info("ChangeNode[{}] payload modified successfully", getId());
             }
         } catch (Exception e) {
-            // 예외 발생 시 로그 기록 및 에러 처리
+            /** 예외 발생 시 로그 기록 및 에러 처리 */
             log.error("Error in ChangeNode[{}]: {}", getId(), e.getMessage());
             handleError(e);
             return;
@@ -125,23 +125,23 @@ public class ChangeNode extends InOutNode {
     }
 }
 
-/*
+/**
  * 사용 예시:
  * 
- * // ChangeNode 생성 및 시작
+ * /** ChangeNode 생성 및 시작
  * UUID nodeId = UUID.randomUUID();
  * ChangeNode metadataNode = new ChangeNode(nodeId, "status", "active", true);
  * metadataNode.start();
  * log.info("Created and started ChangeNode with ID: {}", nodeId);
  * 
- * // 메타데이터 변경 테스트
+ * /** 메타데이터 변경 테스트
  * Map<String, Object> metadata = new HashMap<>();
  * metadata.put("originalKey", "originalValue");
  * Message message1 = new Message("testPayload", metadata);
  * log.debug("Created test message with metadata: {}", metadata);
  * metadataNode.onMessage(message1);
  * 
- * // 페이로드 변경 테스트
+ * /** 페이로드 변경 테스트
  * UUID payloadNodeId = UUID.randomUUID();
  * ChangeNode payloadNode = new ChangeNode(payloadNodeId, "name", "testName",
  * false);

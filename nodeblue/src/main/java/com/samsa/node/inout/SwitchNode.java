@@ -48,23 +48,23 @@ public class SwitchNode extends InOutNode {
     @Override
     public void onMessage(Message message) {
         try {
-            // 리플렉션을 사용하여 노드의 상태 필드에 접근
+            /** 리플렉션을 사용하여 노드의 상태 필드에 접근 */
             java.lang.reflect.Field statusField = Node.class.getDeclaredField("status");
             statusField.setAccessible(true);
             Object currentStatus = statusField.get(this);
 
-            // 노드가 실행 중이 아니면 메시지 처리하지 않음
+            /** 노드가 실행 중이 아니면 메시지 처리하지 않음 */
             if (!"RUNNING".equals(currentStatus.toString())) {
                 log.debug("SwitchNode[{}] skipped message: not in RUNNING state", getId());
                 return;
             }
 
-            // 메시지의 메타데이터를 안전하게 복사
+            /** 메시지의 메타데이터를 안전하게 복사 */
             Map<String, Object> metadata = new HashMap<>(message.getMetadata());
             Object value = metadata.get(propertyName);
             log.debug("SwitchNode[{}] processing message with property value: {}", getId(), value);
 
-            // 출력 파이프 목록 조회
+            /** 출력 파이프 목록 조회 */
             List<Pipe> outputs = getOutputPipes();
             if (value != null && outputs.size() > 1) {
                 // 해시값을 이용해 출력 파이프 인덱스 계산
@@ -87,7 +87,7 @@ public class SwitchNode extends InOutNode {
     }
 }
 
-/*
+/**
  * 사용 예시:
  * 
  * // SwitchNode 생성 및 시작
