@@ -18,27 +18,30 @@ public class ChangeNode extends InOutNode {
     private final Object value;
     /** true이면 메타데이터 변경, false이면 페이로드 변경 */
     private final boolean isMetadata;
-    
+
     /**
      * String UUID로 ChangeNode를 생성한다.
-     * @param uuid 노드의 고유 식별자 (UUID 문자열)
-     * @param property 변경할 속성의 키 값
-     * @param value 설정할 새로운 값
+     * 
+     * @param uuid       노드의 고유 식별자 (UUID 문자열)
+     * @param property   변경할 속성의 키 값
+     * @param value      설정할 새로운 값
      * @param isMetadata true면 메타데이터 변경, false면 페이로드 변경
      * @throws IllegalArgumentException uuid가 유효하지 않은 경우
      */
     public ChangeNode(String uuid, String property, Object value, boolean isMetadata) {
+        /* 부모 클래스의 생성자를 호출하여 uuid 값을 전달 */
         super(uuid);
         this.property = property;
         this.value = value;
         this.isMetadata = isMetadata;
     }
-    
+
     /**
      * UUID 객체로 ChangeNode를 생성한다.
-     * @param id 노드의 고유 식별자 (UUID 객체)
-     * @param property 변경할 속성의 키 값
-     * @param value 설정할 새로운 값
+     * 
+     * @param id         노드의 고유 식별자 (UUID 객체)
+     * @param property   변경할 속성의 키 값
+     * @param value      설정할 새로운 값
      * @param isMetadata true면 메타데이터 변경, false면 페이로드 변경
      */
     public ChangeNode(UUID id, String property, Object value, boolean isMetadata) {
@@ -47,7 +50,7 @@ public class ChangeNode extends InOutNode {
         this.value = value;
         this.isMetadata = isMetadata;
     }
-    
+
     /**
      * 메시지를 받아서 처리하는 메서드.
      * 노드가 RUNNING 상태일 때만 동작하며, 설정에 따라 메타데이터나 페이로드를 수정한다.
@@ -59,7 +62,7 @@ public class ChangeNode extends InOutNode {
         if (status != NodeStatus.RUNNING) {
             return;
         }
-        
+
         if (isMetadata) {
             // 메타데이터 변경
             Map<String, Object> newMetadata = new HashMap<>(message.getMetadata());
@@ -82,10 +85,10 @@ public class ChangeNode extends InOutNode {
  * 
  * // 메타데이터를 변경하는 ChangeNode 생성 및 시작
  * ChangeNode metadataNode = new ChangeNode(
- *     UUID.randomUUID(),
- *     "status",
- *     "active",
- *     true
+ * UUID.randomUUID(),
+ * "status",
+ * "active",
+ * true
  * );
  * metadataNode.start();
  * 

@@ -17,10 +17,11 @@ import java.util.UUID;
 public class SwitchNode extends InOutNode {
     /** 메타데이터에서 검사할 속성의 키 값 */
     private final String property;
-    
+
     /**
      * String UUID로 SwitchNode를 생성한다.
-     * @param uuid 노드의 고유 식별자 (UUID 문자열)
+     * 
+     * @param uuid     노드의 고유 식별자 (UUID 문자열)
      * @param property 라우팅 기준이 되는 메타데이터의 키 값
      * @throws IllegalArgumentException uuid가 유효하지 않은 경우
      */
@@ -28,17 +29,18 @@ public class SwitchNode extends InOutNode {
         super(uuid);
         this.property = property;
     }
-    
+
     /**
      * UUID 객체로 SwitchNode를 생성한다.
-     * @param id 노드의 고유 식별자 (UUID 객체)
+     * 
+     * @param id       노드의 고유 식별자 (UUID 객체)
      * @param property 라우팅 기준이 되는 메타데이터의 키 값
      */
     public SwitchNode(UUID id, String property) {
         super(id);
         this.property = property;
     }
-    
+
     /**
      * 메시지를 받아서 처리하는 메서드.
      * 노드가 RUNNING 상태일 때만 동작하며, 메타데이터의 특정 값을 기준으로 출력을 결정한다.
@@ -50,11 +52,11 @@ public class SwitchNode extends InOutNode {
         if (status != NodeStatus.RUNNING) {
             return;
         }
-        
+
         // 메타데이터에서 라우팅 기준값 추출
         Map<String, Object> metadata = new HashMap<>(message.getMetadata());
         Object value = metadata.get(property);
-        
+
         // 출력 파이프 선택 및 메시지 전송
         List<Pipe> outputs = getOutputPipes();
         if (value != null && outputs.size() > 1) {
